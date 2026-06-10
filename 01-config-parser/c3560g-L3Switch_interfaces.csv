@@ -1,0 +1,16 @@
+name,description,IP address
+Null0,,
+Loopback0,## Management Loopback ##,10.255.255.1
+Port-channel1,,
+Port-channel2,## Uplink to Core ##,
+GigabitEthernet0/1,## Uplink to ISP Router ##,
+GigabitEthernet0/2,## Link to SW2 ##,
+GigabitEthernet0/11,,
+GigabitEthernet0/19,## Unused Port ##,
+GigabitEthernet0/28,## Server Farm ##,
+GigabitEthernet0/33,## Private VLAN Host A ##,
+Vlan9,## Management VLAN ##,10.9.0.1
+Vlan10,## Data VLAN ##,10.10.0.1
+Vlan11,## Voice VLAN ##,10.11.0.1
+Vlan20,## Server VLAN ##,10.20.0.1
+Vlan99,## Native/Infra VLAN ##,10.99.0.1

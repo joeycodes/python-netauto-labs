@@ -1,0 +1,11 @@
+name,description,IP address
+Loopback0,## Router Loopback ##,10.255.0.6
+Null0,,
+Embedded-Service-Engine0/0,,
+GigabitEthernet0/0,## WAN - ISP Uplink ##,203.0.113.2
+GigabitEthernet0/1,## LAN - Internal Network ##,192.168.1.1
+GigabitEthernet0/2,## Unused ##,
+ATM0/0/0,,
+ATM0/0/0.38,## Link to ISP (adsl-old) ##,
+Dialer1,## PrimaryWAN DSL ##,
+Dialer2,## BackupWAN ##,
