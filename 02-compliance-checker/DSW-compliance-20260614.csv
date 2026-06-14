@@ -1,0 +1,6 @@
+hostname,scope,rule,description,actual_value
+DSW,device,telnet_disabled,Telnet must be disabled on any device,transport input telnet ssh
+DSW,device,hostname_convention,"Device hostname must be region-site-datacenter-rack-device_type-device_num, e.g., sg-plaza1-dc01-r14-c9300-01",hostname DSW
+DSW,Null0,up_intf_description,"interface must be labeled for its usage in a fixed convention if it is enabled, ## To the interface of which destination device (hostname)## e.g., ## To eth1/1 of sg-plaza1-dc01-r14-pa-1410-01 ##",(Not configured)
+DSW,Port-channel1,up_intf_description,"interface must be labeled for its usage in a fixed convention if it is enabled, ## To the interface of which destination device (hostname)## e.g., ## To eth1/1 of sg-plaza1-dc01-r14-pa-1410-01 ##",(Not configured)
+DSW,GigabitEthernet0/11,up_intf_description,"interface must be labeled for its usage in a fixed convention if it is enabled, ## To the interface of which destination device (hostname)## e.g., ## To eth1/1 of sg-plaza1-dc01-r14-pa-1410-01 ##",(Not configured)

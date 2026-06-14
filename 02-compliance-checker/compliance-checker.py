@@ -1,5 +1,7 @@
 import yaml
 import re
+from datetime import date
+import csv
 
 rule_file = 'rules/rules_defined.yml'
 sample_config = 'device_conf/c3560g-L3Switch.conf'
@@ -50,6 +52,12 @@ def read_config_lines(config):
                     lines.append(clean)
     return lines
 
+def get_hostname(global_lines):
+    for line in global_lines:
+        if line.startswith('hostname'):
+            return line.split()[1]
+    return 'unknown'
+
 def intf_cond_met(interface, rule):
     expected = rule['condition']['state']
     return expected == interface.get('state')
@@ -65,7 +73,7 @@ def intf_checker(config, rules):
                 continue
             actual_value = extract_interface(interface, rule)
             if run_check(actual_value, rule) is True:
-                violations.append({'interface': interface['name'], 'rule': rule['name']})
+                violations.append({'interface': interface['name'], 'rule': rule['name'], 'description': rule['description'], 'actual_value': actual_value})
     return violations
 
 def extract_interface(interface, rule):
@@ -75,11 +83,13 @@ def extract_interface(interface, rule):
 def global_checker(config, rules):
     violations = []
     global_lines = read_config_lines(config)
+    # print("This is global lines read from file: ", global_lines)
     rules = rules_reader(rules)
     for rule in rules['global_rules']:
         actual_value = extract_global(global_lines, rule)
+        # print("This is actual value extracted from global: ", actual_value)
         if run_check(actual_value, rule) is True:
-            violations.append({'rule': rule['name'], 'scope': 'device'})
+            violations.append({'rule': rule['name'], 'scope': 'device', 'description': rule['description'], 'actual_value': actual_value})
     return violations
 
 def extract_global(global_lines, rule):
@@ -99,6 +109,44 @@ def run_check(actual_value, rule):
         return actual_value is None or not re.match(rule.get('value'), actual_value.split()[1])
     return False
 
+def build_report(config, rules):
+    global_lines = read_config_lines(config)
+    hostname = get_hostname(global_lines)
+    g_viol = global_checker(config, rules)
+    i_viol = intf_checker(config, rules)
+
+    rows = []
+
+    for viol in g_viol:
+        rows.append(to_row(hostname, viol.get('scope'), viol))
+
+    for viol in i_viol:
+        rows.append(to_row(hostname, viol.get('interface'), viol))
+
+    return hostname, rows
+
+def to_row(hostname, scope, viol):
+    actual = viol.get('actual_value')
+    actual = actual if actual is not None else "(Not configured)"
+    return {
+        'hostname': hostname,
+        'scope': scope,
+        'rule': viol.get('rule'),
+        'description': viol.get('description'),
+        'actual_value': actual
+    }
+
+def write_csv(hostname, rows):
+    today = date.today().strftime('%Y%m%d')
+    filename = f"{hostname}-compliance-{today}.csv"
+    fieldnames = ['hostname', 'scope', 'rule', 'description', 'actual_value']
+
+    with open(filename, 'w', newline='', encoding='utf-8-sig') as f:
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerows(rows)
+    return filename
+
 if __name__ == "__main__":
-    print(intf_checker(sample_config, rule_file))
-    print(global_checker(sample_config, rule_file))
+    hostname, rows = build_report(sample_config, rule_file)
+    write_csv(hostname, rows)
