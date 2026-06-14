@@ -1,0 +1,5 @@
+interface_rules:
+  - name: must_have_description
+    description: Every interface must have a description
+  - name: must_have_ip
+    description: Every interface must have an IP address

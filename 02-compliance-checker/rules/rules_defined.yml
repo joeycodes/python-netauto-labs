@@ -1,0 +1,52 @@
+---
+global_rules:
+  - name: telnet_disabled
+    vendor: cisco
+    scope: device
+    description: Telnet must be disabled on any device
+    match_line: transport input
+    check: must_not_contain
+    value: telnet
+  - name: enable_secret
+    vendor: cisco
+    scope: device
+    description: Enable password must be configured with enable secret
+    match_line: enable secret
+    check: must_exist
+  - name: hostname_convention
+    vendor: cisco
+    scope: device
+    description: Device hostname must be region-site-datacenter-rack-device_type-device_num, e.g., sg-plaza1-dc01-r14-c9300-01
+    match_line: hostname
+    check: must_match
+    value: '^[a-z]{2,}-[a-z0-9]+-dc\d+-r\d+-[a-z0-9]+-\d{2,}$'
+  - name: ntp_config
+    vendor: cisco
+    scope: device
+    description: Must have NTP configured with required local or global NTP server addresses
+    match_line: ntp
+    check: must_exist
+  - name: snmp_config
+    vendor: cisco
+    scope: device
+    description: Must have SNMP configured with required local SNMP server with community value to be XXX.
+    match_line: snmp
+    check: must_exist
+interface_rules:
+  - name: up_intf_description
+    vendor: cisco
+    scope: interface
+    description: "interface must be labeled for its usage in a fixed convention if it is enabled, ## To the interface of which destination device (hostname)## e.g., ## To eth1/1 of sg-plaza1-dc01-r14-pa-1410-01 ##"
+    condition:
+      state: up
+    field: description
+    check: must_exist
+  - name: down_intf_description
+    vendor: cisco
+    scope: interface
+    description: "interface must be labeled for the reason it left down, must include keywords like unused, reserved, disabled"
+    condition:
+      state: down
+    field: description
+    check: must_exist
+    
