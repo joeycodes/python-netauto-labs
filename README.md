@@ -28,11 +28,11 @@ All device configs in this repo are sample/lab. No real hostnames, IPs, or crede
 
 ## Structure
 
-​```
+```
 python-netauto-labs/
 ├── 01-config-parser/
-│   ├── *parser.py
-│   ├── csv-outputs
+│   ├── *parser.py
+│   ├── csv-outputs
 │   └── sample-configs
 ├── 02-compliance-checker/
 │   ├── compliance-checker.py
@@ -40,4 +40,4 @@ python-netauto-labs/
 │   ├── rules/
 │   └── *-compliance-YYYYMMDD.csv
 └── ...
-​```
+```
