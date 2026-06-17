@@ -11,6 +11,23 @@ device configs to interacting with live devices and orchestrating changes.
 | 01 | [config-parser](./01-config-parser) | Parses Cisco IOS configs and extracts per-interface data (name, description, IP) into CSV | file I/O, regex, dict/list modeling, csv |
 | 02 | [compliance-checker](./02-compliance-checker) | Checks device configs against YAML-defined rules and outputs a CSV violation report | YAML rule engine, rules decoupled from code, layered architecture (extract / check / report), shared check logic, state machine |
 
+## Getting started
+
+```bash
+git clone https://github.com/joeycodes/python-netauto-labs.git
+cd python-netauto-labs
+pip install -r requirements.txt
+```
+
+Then run a lab, e.g. the compliance checker:
+
+```bash
+cd 02-compliance-checker
+python compliance_checker.py
+```
+
+This scans the sample config against the YAML rules and writes a `<hostname>-compliance-<date>.csv` report.
+
 ## Why this repo
 
 I want to use this repo to document and practice Python network automation — covering different areas from beginner to advanced, along with the relevant modules involved.
@@ -28,16 +45,16 @@ All device configs in this repo are sample/lab. No real hostnames, IPs, or crede
 
 ## Structure
 
-```
+​```
 python-netauto-labs/
 ├── 01-config-parser/
-│   ├── *parser.py
-│   ├── csv-outputs
+│   ├── *parser.py
+│   ├── csv-outputs
 │   └── sample-configs
 ├── 02-compliance-checker/
 │   ├── compliance-checker.py
-│   ├── device_conf/
+│   ├── config/
 │   ├── rules/
 │   └── *-compliance-YYYYMMDD.csv
 └── ...
-```
+​```
