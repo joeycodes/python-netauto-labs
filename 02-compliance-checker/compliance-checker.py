@@ -2,9 +2,12 @@ import yaml
 import re
 from datetime import date
 import csv
+import glob
+import os
 
 rule_file = 'rules/rules_defined.yml'
-sample_config = 'device_conf/c3560g-L3Switch.conf'
+sample_config = 'config/c3560g-L3Switch.conf'
+config_dir = 'config/'
 
 def rules_reader(rules):
     with open(rules) as f:
@@ -83,11 +86,9 @@ def extract_interface(interface, rule):
 def global_checker(config, rules):
     violations = []
     global_lines = read_config_lines(config)
-    # print("This is global lines read from file: ", global_lines)
     rules = rules_reader(rules)
     for rule in rules['global_rules']:
         actual_value = extract_global(global_lines, rule)
-        # print("This is actual value extracted from global: ", actual_value)
         if run_check(actual_value, rule) is True:
             violations.append({'rule': rule['name'], 'scope': 'device', 'description': rule['description'], 'actual_value': actual_value})
     return violations
@@ -136,9 +137,7 @@ def to_row(hostname, scope, viol):
         'actual_value': actual
     }
 
-def write_csv(hostname, rows):
-    today = date.today().strftime('%Y%m%d')
-    filename = f"{hostname}-compliance-{today}.csv"
+def write_csv(filename, rows):
     fieldnames = ['hostname', 'scope', 'rule', 'description', 'actual_value']
 
     with open(filename, 'w', newline='', encoding='utf-8-sig') as f:
@@ -147,6 +146,22 @@ def write_csv(hostname, rows):
         writer.writerows(rows)
     return filename
 
+def run_all(config_dir, rules):
+    all_rows = []
+    filenames = []
+    today = date.today().strftime('%Y%m%d')
+    config_files = glob.glob(os.path.join(config_dir, '*.conf'))
+    for config in config_files:
+        hostname, rows = build_report(config, rules)
+        device_filename = f"{hostname}-compliance-{today}.csv"
+        write_csv(device_filename, rows)
+        all_rows.extend(rows)
+        filenames.append(device_filename)
+    
+    aio_filename = f"all-device-compliance-{today}.csv"
+    write_csv(aio_filename, all_rows)
+    filenames.append(aio_filename)
+    return filenames
+
 if __name__ == "__main__":
-    hostname, rows = build_report(sample_config, rule_file)
-    write_csv(hostname, rows)
+    run_all(config_dir, rule_file)
