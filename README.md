@@ -44,8 +44,7 @@ I want to use this repo to document and practice Python network automation — c
 All device configs in this repo are sample/lab. No real hostnames, IPs, or credentials. 
 
 ## Structure
-
-​```
+```
 python-netauto-labs/
 ├── 01-config-parser/
 │   ├── *parser.py
@@ -57,4 +56,4 @@ python-netauto-labs/
 │   ├── rules/
 │   └── *-compliance-YYYYMMDD.csv
 └── ...
-​```
+```
